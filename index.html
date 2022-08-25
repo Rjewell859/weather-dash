@@ -3,21 +3,45 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./assets/style.css">
+  <script type="text/JavaScript" src=" https://MomentJS.com/downloads/moment.js"></script>
   <title></title>
 </head>
 
 <body>
 
-  <nav>
-   
-  </nav>
-
-
-
   <main>
-   
+    <header>
+      <h1>Weather Dashboard</h1>
+    </header>
+    <h2>Search for a City:</h2><br>
+    <section id='search'><br>
+      <input id='city' type='text'><br>
+
+      <button onclick=getLatLon() type='submit' id='submit'>Search</button>
+      <div id='history'>
+
+      </div>
+    </section>
+
+    <section id='current'>
+      <h2 id='cityName'></h1>
+        <icon id ='icon'></icon>
+      <ul>
+        <li id='temp'>Temp: </li>
+        <li id='wind'>Wind: </li>
+        <li id='humidity'>Humidity: </li>
+        <li id='aqi'>Air Quality Index: </li>
+      </ul>
+    </section>
+
+    <section id='week'>
+    
+
+
+    </section>
+
   </main>
 
 
