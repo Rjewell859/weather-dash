@@ -10,7 +10,7 @@ var humidityEl = document.getElementById('humidity')
 var aqiIndexEl = document.getElementById('aqi')
 var forecastEl = document.getElementById('week')
 var iconEl = document.getElementById('icon')
-var historyEl = document.getElementById('history')
+var historySection = document.getElementById('history')
 
 var parameters = '&units=imperial&appid='
 
@@ -22,7 +22,7 @@ var currentWeatherLink = 'https://api.openweathermap.org/data/2.5/weather?'
 
 var aqiLink = 'http://api.openweathermap.org/data/2.5/air_pollution?'
 
-
+var historyArray = []
 
 const today = '(' + moment(new Date()).format("MM/DD/YYYY") + ")"
 
@@ -33,28 +33,26 @@ var getLatLon = function () {
   var searchParameters = '&limit=5&appid='
   var cityRequestUrl = searchLink + selectedCity + searchParameters + apiKey
 
-  setHistory(selectedCity, cityRequestUrl)
-  sendRequest(cityRequestUrl)
-}
-  var sendRequest = function(cityRequestUrl) {
-    
+  
+
   fetch(cityRequestUrl)
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
-      
+
       var latitude = (data[0].lat)
       var longitude = (data[0].lon)
       var latlon = [latitude, longitude];
       var location = 'lat=' + latlon[0] + '&lon=' + latlon[1];
-      getCurrentWeather(location)
-     
+      setHistory(selectedCity, location)
+      
+      
 
     })
 
 
-  }
+}
 var getCurrentWeather = function (location) {
   iconEl.innerHTML = ''
 
@@ -65,8 +63,8 @@ var getCurrentWeather = function (location) {
       return response.json();
     })
     .then(function (data) {
+
       
-      console.log(data)
       var icon = data.weather[0].icon
       var image = document.createElement('img');
       image.setAttribute('src', getIcon(icon));
@@ -78,7 +76,7 @@ var getCurrentWeather = function (location) {
       humidityEl.innerText = 'Humidity: ' + data.main.humidity + '%'
 
     })
-    getWeekWeather(location)
+  getWeekWeather(location)
 }
 var getWeekWeather = function (location) {
 
@@ -91,14 +89,10 @@ var getWeekWeather = function (location) {
     })
 
     .then(function (data) {
-      console.log(data)
+      
       var responseArray = data.list
-      console.log(responseArray)
-      for (let i = 0; i <40; i ++) {
-        var unixDate = responseArray[i].dt_txt
-        var convertedDate = '(' + moment(unixDate).format("MM/DD/YYYY HH:mm") + ')'
-        console.log(convertedDate)
-      }
+      
+      
       var forcastHeading = document.createElement('h3')
       forcastHeading.innerHTML = '5 Day Forecast:'
       forecastEl.appendChild(forcastHeading)
@@ -121,7 +115,7 @@ var getWeekWeather = function (location) {
 
         weatherCard.setAttribute('class', 'card');
 
-        dateElement.innerText =  convertedDate;
+        dateElement.innerText = convertedDate;
         tempElement.innerText = 'Temp: ' + temp;
         windElement.innerText = 'Wind: ' + wind;
         humidityElement.innerText = 'Humidity: ' + humidity;
@@ -135,14 +129,14 @@ var getWeekWeather = function (location) {
         forecastEl.append(weatherCard);
 
       }
-      
+
 
     })
-    
-    getAQI(location)
+
+  getAQI(location)
 
 }
-var getIcon = function(icon) {
+var getIcon = function (icon) {
   var iconUrl = 'http://openweathermap.org/img/wn/' + icon + "@2x.png"
   return iconUrl
 }
@@ -152,7 +146,7 @@ var getAQI = function (location) {
       return response.json();
     })
     .then(function (data) {
-      
+
       var aqi = data.list[0].main.aqi
       var quality
       switch (aqi) {
@@ -178,23 +172,65 @@ var getAQI = function (location) {
 }
 
 
-var setHistory = function(name, url) {
-  localStorage.setItem(name, url)
-  var historyObject = document.createElement('a')
-  historyObject.innerHTML = name;
-  historyObject.setAttribute('data-url', url)
-  historyObject.setAttribute('href', '#/')
+var setHistory = function (name, location) {
+
+  if (historyArray.length > 8) {
+    historyArray.shift()
+    localStorage.shift()
+  }
+  var historyObject = {
+    title: name,
+    location: location
+    
+  }
+
+  historyArray.unshift(historyObject)
+  localStorage.setItem(name, location)
+  var historyEl = document.createElement('a')
+  historyEl.innerHTML = historyObject.title;
+
+  historyEl.setAttribute('href', '#/')
+  console.log(historyObject.location)
+  historyEl.onclick = function () {
+    getCurrentWeather(historyObject.location)
+  };
+
+
+  historySection.append(historyEl);
+
+  getCurrentWeather(location)
+
+}
+
+
+var loadHistory = function () {
+  if (localStorage.length >= 1) {
+
+    for (var i = 0; i < localStorage.length; i++) { 
+      var historyLocation = localStorage.getItem(localStorage.key(i))
+    
+      var historyTitle = localStorage.key(i)
+      var historyEl = document.createElement('a')
+      var historyObject = {
+        title: historyTitle,
+        location: historyLocation
+        
+      }
+      historyEl.setAttribute('data-url', historyLocation);
+      
+  historyEl.innerHTML = historyTitle;
   
 
-  historyEl.append(historyObject);
+  historyEl.setAttribute('href', '#/')
+  historyEl.onclick = function (historyLocation) {
+    console.log(historyObject.location)
+    getCurrentWeather(historyLocation)
+  };
 
 
+  historySection.append(historyEl);
 
+    }
+  }
 }
-
-var loadHistory = function() {
-
-}
-
 loadHistory()
-
