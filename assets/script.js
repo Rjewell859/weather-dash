@@ -7,7 +7,7 @@ var currentEl = document.getElementById('current')
 var tempEl = document.getElementById('temp')
 var windEl = document.getElementById('wind')
 var humidityEl = document.getElementById('humidity')
-var aqiIndexEl = document.getElementById('aqi')
+var uviIndexEl = document.getElementById('aqi')
 var forecastEl = document.getElementById('week')
 var iconEl = document.getElementById('icon')
 var historySection = document.getElementById('history')
@@ -20,7 +20,9 @@ var apiKey = '9e35aa0fc6b3027ec345e09324b68148'
 
 var currentWeatherLink = 'https://api.openweathermap.org/data/2.5/weather?'
 
-var aqiLink = 'http://api.openweathermap.org/data/2.5/air_pollution?'
+var uviLink = 'https://api.openweathermap.org/data/2.5/onecall?'
+
+var uvparameters = '&exclude=hourly,daily&appid='
 
 var historyArray = []
 
@@ -33,7 +35,7 @@ var getLatLon = function () {
   var searchParameters = '&limit=5&appid='
   var cityRequestUrl = searchLink + selectedCity + searchParameters + apiKey
 
-  
+
 
   fetch(cityRequestUrl)
     .then(function (response) {
@@ -46,8 +48,8 @@ var getLatLon = function () {
       var latlon = [latitude, longitude];
       var location = 'lat=' + latlon[0] + '&lon=' + latlon[1];
       setHistory(selectedCity, location)
-      
-      
+
+
 
     })
 
@@ -64,7 +66,7 @@ var getCurrentWeather = function (location) {
     })
     .then(function (data) {
 
-      
+
       var icon = data.weather[0].icon
       var image = document.createElement('img');
       image.setAttribute('src', getIcon(icon));
@@ -89,10 +91,10 @@ var getWeekWeather = function (location) {
     })
 
     .then(function (data) {
-      
+
       var responseArray = data.list
-      
-      
+
+
       var forcastHeading = document.createElement('h3')
       forcastHeading.innerHTML = '5 Day Forecast:'
       forecastEl.appendChild(forcastHeading)
@@ -141,33 +143,18 @@ var getIcon = function (icon) {
   return iconUrl
 }
 var getAQI = function (location) {
-  var aqiRequestUrl = aqiLink + location + parameters + apiKey
-  fetch(aqiRequestUrl).then(function (response) {
+
+  var uviRequestUrl = uviLink + location + uvparameters + apiKey
+
+  fetch(uviRequestUrl).then(function (response) {
+
       return response.json();
     })
     .then(function (data) {
 
-      var aqi = data.list[0].main.aqi
-      var quality
-      switch (aqi) {
-        case 1:
-          quality = 'Good';
-          break;
-        case 2:
-          quality = 'Fair';
-          break;
-        case 3:
-          quality = 'Moderate';
-          break;
-        case 4:
-          quality = 'Poor';
-          break;
-        case 5:
-          quality = 'Very Poor';
-      }
+      console.log(data)
 
-      aqiIndexEl.innerText = 'Air Quality Index: ' + quality;
-
+      uviIndexEl.innerText = 'UV Index: ' + data.current.uvi
     })
 }
 
@@ -181,7 +168,7 @@ var setHistory = function (name, location) {
   var historyObject = {
     title: name,
     location: location
-    
+
   }
 
   historyArray.unshift(historyObject)
@@ -191,12 +178,10 @@ var setHistory = function (name, location) {
 
   historyEl.setAttribute('href', '#/')
   console.log(historyObject.location)
-  historyEl.onclick = function () {
-    getCurrentWeather(historyObject.location)
-  };
+ 
 
 
-  historySection.append(historyEl);
+  historySection.prepend(historyEl);
 
   getCurrentWeather(location)
 
@@ -204,33 +189,37 @@ var setHistory = function (name, location) {
 
 
 var loadHistory = function () {
-  if (localStorage.length >= 1) {
 
-    for (var i = 0; i < localStorage.length; i++) { 
-      var historyLocation = localStorage.getItem(localStorage.key(i))
+
+  for (var i = localStorage.length; i >= 0; i--) {
+    let historyTitle = localStorage.key(i)
+    let historyItem = localStorage.getItem(localStorage.key(i))
+
+
+    let historyEl = document.createElement('a')
+    historyEl.onclick = function () {
+      console.log(historyItem)
+      getCurrentWeather(historyItem)
+    };
+    historyEl.innerHTML = historyTitle;
+    historyEl.setAttribute('href', '#/')
     
-      var historyTitle = localStorage.key(i)
-      var historyEl = document.createElement('a')
-      var historyObject = {
-        title: historyTitle,
-        location: historyLocation
-        
-      }
-      historyEl.setAttribute('data-url', historyLocation);
-      
-  historyEl.innerHTML = historyTitle;
-  
-
-  historyEl.setAttribute('href', '#/')
-  historyEl.onclick = function (historyLocation) {
-    console.log(historyObject.location)
-    getCurrentWeather(historyLocation)
-  };
+    historySection.append(historyEl);
+    
 
 
-  historySection.append(historyEl);
 
-    }
+
+
+  }
+
+}
+
+var logHistory = function() {
+  for (var i = 0; i < localStorage.length; i++) {
+    console.log(localStorage.key(i) + ': ' + localStorage.getItem(localStorage.key(i)))
   }
 }
 loadHistory()
+
+logHistory()
