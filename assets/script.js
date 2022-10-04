@@ -97,6 +97,8 @@ var getWeekWeather = function (location) {
 
       var forcastHeading = document.createElement('h3')
       forcastHeading.innerHTML = '5 Day Forecast:'
+      forcastHeading.setAttribute('class', 'card')
+      forcastHeading.setAttribute('class', 'card-header')
       forecastEl.appendChild(forcastHeading)
       for (let i = 5; i <= 40; i += 8) {
         var unixDate = responseArray[i].dt_txt
@@ -115,7 +117,16 @@ var getWeekWeather = function (location) {
         var windElement = document.createElement('li')
         var humidityElement = document.createElement('li')
 
+        weatherCard.setAttribute('id', 'weatherCard');
         weatherCard.setAttribute('class', 'card');
+        dateElement.setAttribute('class', 'card-header');
+        tempElement.setAttribute('class', 'list-group-item')
+        windElement.setAttribute('class', 'list-group-item')
+        humidityElement.setAttribute('class', 'list-group-item')
+        tempElement.setAttribute('style', 'font-weight:bold')
+        windElement.setAttribute('style', 'font-weight:bold')
+        humidityElement.setAttribute('style', 'font-weight:bold')
+
 
         dateElement.innerText = convertedDate;
         tempElement.innerText = 'Temp: ' + temp;
@@ -177,6 +188,7 @@ var setHistory = function (name, location) {
   historyEl.innerHTML = historyObject.title;
 
   historyEl.setAttribute('href', '#/')
+  historyEl.setAttribute('class', 'list-group-item')
   console.log(historyObject.location)
  
 
@@ -203,6 +215,7 @@ var loadHistory = function () {
     };
     historyEl.innerHTML = historyTitle;
     historyEl.setAttribute('href', '#/')
+    historyEl.setAttribute('class', 'list-group-item')
     
     historySection.append(historyEl);
     

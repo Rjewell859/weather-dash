@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="./assets/style.css">
+  
   <script type="text/JavaScript" src=" https://MomentJS.com/downloads/moment.js"></script>
   <title></title>
 </head>
@@ -15,28 +17,36 @@
     <header>
       <h1>Weather Dashboard</h1>
     </header>
-    <h2>Search for a City:</h2><br>
+    <h2 class="card-header">Search for a City:</h2><br>
     <section id='search'><br>
-      <input id='city' type='text'><br>
 
-      <button onclick=getLatLon() type='submit' id='submit'>Search</button>
-      <div id='history'>
-
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">🌎</span>
+        </div>
+        <input type="text" class="form-control" id ='city' placeholder="Location"aria-describedby="basic-addon1">
       </div>
+
+      <button onclick=getLatLon() class='btn btn-primary' type='submit' id='submit'>Search</button>
+    
+        <div class='card-body'id='history'></div>
+   
     </section>
 
-    <section id='current'>
-      <h2 id='cityName'></h1>
+    <section class ='card' id='current'>
+      <h2 class="card-header" id='cityName'></h1>
+        <div class = "card-body" >
         <icon id ='icon'></icon>
       <ul>
-        <li id='temp'>Temp: </li>
-        <li id='wind'>Wind: </li>
-        <li id='humidity'>Humidity: </li>
-        <li id='aqi'>Air Quality Index: </li>
+        <li class="list-group-item" style="font-weight:bold" id='temp'>Temp: </li>
+        <li class="list-group-item" style="font-weight:bold" id='wind'>Wind: </li>
+        <li class="list-group-item" style="font-weight:bold" id='humidity'>Humidity: </li>
+        <li class="list-group-item" style="font-weight:bold" id='aqi'>Air Quality Index: </li>
       </ul>
+    </div>
     </section>
 
-    <section id='week'>
+    <section class = 'card' id='week'>
     
 
 
