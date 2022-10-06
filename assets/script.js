@@ -222,7 +222,6 @@ var loadHistory = function () {
     let historyEl = document.createElement('a')
     // When clicked the application will call the functions to find the data for the selected city
     historyEl.onclick = function () {
-      console.log(historyItem)
       getCurrentWeather(historyItem)
     };
     historyEl.innerHTML = historyTitle;
