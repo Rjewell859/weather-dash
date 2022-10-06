@@ -212,7 +212,6 @@ var setHistory = function (name, location) {
   getCurrentWeather(location)
 }
 
-
 var loadHistory = function () {
   // Looping through local storage to get history objects
   for (var i = localStorage.length; i >= 0; i--) {
